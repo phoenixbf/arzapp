@@ -1,0 +1,15 @@
+.appSlider {
+    display: inline-block;
+
+    text-shadow: 0px 0px 6px black;
+    text-align: center;
+
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    margin: 3px;
+    padding: 3px;
+}
