@@ -22,6 +22,15 @@ APP.init = ()=>{
     APP._sidPast    = undefined;
     APP._sidPresent = undefined;
     APP.currPeriod  = "m";
+
+    // Handle different versions
+    ATON.setCollectionPathModifier((url)=>{
+        if (!url.endsWith(".gltf")) return url;
+        if (!ATON.device.isMobile) return url;
+
+        url = url.replace(".gltf", "-m.gltf");
+        return url;
+    });
 };
 
 APP.setupUI = ()=>{
