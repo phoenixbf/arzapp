@@ -46,6 +46,32 @@ APP.setupUI = ()=>{
     });
 
     ATON.FE.uiAddButtonVR("idTopToolbar");
+
+    // SUI
+    let buttons = [];
+
+    let suiSwitch = new ATON.SUI.Button("sui_switch");
+    suiSwitch
+        .setText("Switch")
+        .onSelect = ()=>{
+            if (APP.currPeriod === "a"){
+                APP.switchPeriod("m");
+            }
+            else {
+                APP.switchPeriod("a");
+            }
+        };
+
+    buttons.push( suiSwitch );
+
+    APP.wristToolbar = ATON.SUI.createToolbar( buttons );
+
+    // wrist sui
+    let pi2 = (Math.PI * 0.5);
+    APP.wristToolbar.setPosition(-0.1,0,0.1).setRotation(-pi2,-pi2,pi2).setScale(0.5);
+
+    APP.wristToolbar.attachToRoot();
+    APP.wristToolbar.hide();
 };
 
 // Update
@@ -141,6 +167,14 @@ APP.setupEvents = ()=>{
     ATON.on("Tap", (e)=>{
         if (ATON._hoveredSemNode) APP.updateSemPanel(ATON._hoveredSemNode);
         else $("#idPanel").hide();
+    });
+
+    // Immersive Sessions
+    ATON.on("XRcontrollerConnected", (c)=>{
+        if (c === ATON.XR.HAND_L){
+            ATON.XR.controller1.add(APP.wristToolbar);
+            APP.wristToolbar.show();  
+        }
     });
 };
 
