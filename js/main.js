@@ -23,6 +23,9 @@ APP.init = ()=>{
     APP._sidPresent = undefined;
     APP.currPeriod  = "m";
     APP.currSite    = undefined;
+    
+    APP._povs    = [];
+    APP._cPOVind = 0;
 
     // Handle different versions
     ATON.setCollectionPathModifier((url)=>{
@@ -47,7 +50,12 @@ APP.setupUI = ()=>{
 
     ATON.FE.uiAddButtonVR("idTopToolbar");
 
+    ATON.FE.uiAddButton("idBottomToolbar", "prev", APP.povPrev, "Previous Viewpoint" );
+    ATON.FE.uiAddButton("idBottomToolbar", "next", APP.povNext, "Next Viewpoint" );
+
     // SUI
+    ATON.SUI.enableSemIcons();
+
     let buttons = [];
 
     let suiSwitch = new ATON.SUI.Button("sui_switch");
@@ -72,6 +80,33 @@ APP.setupUI = ()=>{
 
     APP.wristToolbar.attachToRoot();
     APP.wristToolbar.hide();
+};
+
+// POVs
+APP.povNext = ()=>{
+    let numpovs = APP._povs.length;
+    if (numpovs < 1) return;
+
+    APP._cPOVind = (APP._cPOVind + 1) % numpovs;
+
+    let pov = APP._povs[APP._cPOVind];
+    let dur = (ATON.XR._bPresenting)? ATON.XR.STD_TELEP_DURATION : 1.0;
+
+    console.log(pov);
+
+    ATON.Nav.requestPOV(pov, dur);
+};
+APP.povPrev = ()=>{
+    let numpovs = APP._povs.length;
+    if (numpovs < 1) return;
+
+    APP._cPOVind = (APP._cPOVind - 1);
+    if (APP._cPOVind<0) APP._cPOVind = (numpovs-1);
+
+    let pov = APP._povs[APP._cPOVind];
+
+    let dur = (ATON.XR._bPresenting)? ATON.XR.STD_TELEP_DURATION : 1.0;
+    ATON.Nav.requestPOV(pov, dur);
 };
 
 // Update
@@ -160,8 +195,15 @@ APP.setupEvents = ()=>{
 
     ATON.EventHub.clearEventHandlers("SceneJSONLoaded");
     ATON.on("SceneJSONLoaded", ()=>{
-        //ATON.SceneHub.clear();
-        //APP.setupCommon();
+        APP._povs    = [];
+        APP._cPOVind = 0;
+
+        for (let k in ATON.Nav.povlist){
+            let pov = ATON.Nav.povlist[k];
+    
+            if (k !== "home") APP._povs.push(pov);
+            //console.log(pov);
+        }
     });
 
     ATON.on("Tap", (e)=>{
