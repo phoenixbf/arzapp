@@ -48,10 +48,10 @@ APP.setupUI = ()=>{
         else APP.switchPeriod("a");
     });
 
-    ATON.FE.uiAddButtonVR("idTopToolbar");
-
     ATON.FE.uiAddButton("idBottomToolbar", "prev", APP.povPrev, "Previous Viewpoint" );
-    ATON.FE.uiAddButton("idBottomToolbar", "next", APP.povNext, "Next Viewpoint" );
+    ATON.FE.uiAddButtonVR("idBottomToolbar");
+    ATON.FE.uiAddButton("idBottomToolbar", "info", APP.popupSite, "Informazioni");
+    ATON.FE.uiAddButton("idBottomToolbar", "next", APP.povNext, "Next Viewpoint");
 
     // SUI
     ATON.SUI.enableSemIcons();
@@ -158,6 +158,8 @@ APP.loadSite = (ss)=>{
 
     APP.setupCommon();
 
+    APP.popupSite();
+
     ATON.FE.loadSceneID( APP._sidPresent );
 
     console.log("Site loaded");
@@ -208,7 +210,7 @@ APP.setupEvents = ()=>{
 
     ATON.on("Tap", (e)=>{
         if (ATON._hoveredSemNode) APP.updateSemPanel(ATON._hoveredSemNode);
-        else $("#idPanel").hide();
+        else APP.toggleInfoPanel(false);
     });
 
     // Immersive Sessions
@@ -218,6 +220,19 @@ APP.setupEvents = ()=>{
             APP.wristToolbar.show();  
         }
     });
+};
+
+APP.toggleInfoPanel = (b)=>{
+    if (b){
+        $("#idPanel").show();
+        $("#idTopToolbar").hide();
+        $("#idBottomToolbar").hide();
+    }
+    else {
+        $("#idPanel").hide();
+        $("#idTopToolbar").show();
+        $("#idBottomToolbar").show();
+    }
 };
 
 APP.updateSemPanel = (semid)=>{
@@ -241,7 +256,24 @@ APP.updateSemPanel = (semid)=>{
     ATON.FE.playAudioFromSemanticNode(semid);
 
     $("#idPanel").html(htmlcode);
-    $("#idPanel").show();
+    APP.toggleInfoPanel(true);
+};
+
+// Popups
+APP.popupSite = ()=>{
+    let S = APP.cdata.sites[APP.currSite];
+    if (!S) return;
+
+    let htmlcontent = "<div class='atonPopupTitle'>"+S.title+"</div>";
+    htmlcontent += "<div style='text-align:left'>"+S.descr+"</div>";
+
+    htmlcontent += "<br><br><div id='btnOKwelcome' class='atonBTN atonBTN-horizontal atonBTN-green atonBTN-text'>OK</div>";
+
+    if ( !ATON.FE.popupShow(htmlcontent, "atonPopupCompact") ) return;
+
+    $("#btnOKwelcome").click(()=>{
+        ATON.FE.popupClose();
+    });
 };
 
 
