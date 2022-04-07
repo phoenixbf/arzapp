@@ -209,6 +209,7 @@ APP.setupEvents = ()=>{
 
         if (ATON.SUI.sprites.semIcon){
             ATON.SUI.sprites.semIcon.map = new THREE.TextureLoader().load( "res/sui-sem.png" );
+            //SUI.sprites.semIcon.sizeAttenuation = false;
         }
     });
 
@@ -231,11 +232,15 @@ APP.toggleInfoPanel = (b)=>{
         $("#idPanel").show();
         $("#idTopToolbar").hide();
         $("#idBottomToolbar").hide();
+
+        ATON.Nav._bInteracting = true;
     }
     else {
         $("#idPanel").hide();
         $("#idTopToolbar").show();
         $("#idBottomToolbar").show();
+
+        ATON.Nav._bInteracting = false;
     }
 };
 
