@@ -44,13 +44,13 @@ APP.setupUI = ()=>{
     $("#idPeriod").on("input change",()=>{
         let v = parseInt( $("#idPeriod").val() );
         
-        if (v === 0) APP.switchPeriod("m");
-        else APP.switchPeriod("a");
+        if (v === 0) APP.switchPeriod("a");
+        else APP.switchPeriod("m");
     });
 
     ATON.FE.uiAddButton("idBottomToolbar", "prev", APP.povPrev, "Previous Viewpoint" );
-    ATON.FE.uiAddButtonVR("idBottomToolbar");
-    ATON.FE.uiAddButton("idBottomToolbar", "info", APP.popupSite, "Informazioni");
+    //ATON.FE.uiAddButtonVR("idBottomToolbar");
+    ATON.FE.uiAddButton("idBottomToolbar", "note", APP.popupSite, "Informazioni");
     ATON.FE.uiAddButton("idBottomToolbar", "next", APP.povNext, "Next Viewpoint");
 
     // SUI
@@ -206,6 +206,10 @@ APP.setupEvents = ()=>{
             if (k !== "home") APP._povs.push(pov);
             //console.log(pov);
         }
+
+        if (ATON.SUI.sprites.semIcon){
+            ATON.SUI.sprites.semIcon.map = new THREE.TextureLoader().load( "res/sui-sem.png" );
+        }
     });
 
     ATON.on("Tap", (e)=>{
@@ -267,7 +271,7 @@ APP.popupSite = ()=>{
     let htmlcontent = "<div class='atonPopupTitle'>"+S.title+"</div>";
     htmlcontent += "<div style='text-align:left'>"+S.descr+"</div>";
 
-    htmlcontent += "<br><br><div id='btnOKwelcome' class='atonBTN atonBTN-horizontal atonBTN-green atonBTN-text'>OK</div>";
+    htmlcontent += "<br><br><div id='btnOKwelcome' class='atonBTN atonBTN-horizontal atonBTN-text'>START</div>";
 
     if ( !ATON.FE.popupShow(htmlcontent, "atonPopupCompact") ) return;
 
